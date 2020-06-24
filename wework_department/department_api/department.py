@@ -8,25 +8,33 @@ from wework_department.baseapi.base_api import BaseApi
 
 
 class DepartmentApi(BaseApi):
+    corpsecret = "ENyEkc1Y1QQcLLUABVGr0eRvRArJOoIS06cPYi72E8A"
+
     # 创建部门
     def department_creat(self, name, parentid, **kwargs):
-        r = requests.post("https://qyapi.weixin.qq.com/cgi-bin/department/create",
-                          params={"access_token": self.setup()},
-                          json={"name": name, "parentid": parentid})
+        base_url = "https://qyapi.weixin.qq.com/cgi-bin/department/create"
+        data = {"name": name, "parentid": parentid}
+        data.update(kwargs)
+        r = requests.post(base_url, params={"access_token": self.get_token(self.corpsecret)}, json=data)
         return r.json()
 
-    def department_update(self, id, name):
-        r = requests.post("https://qyapi.weixin.qq.com/cgi-bin/department/update",
-                          params={"access_token": self.setup()},
-                          json={"id": id, "name": name})
+    # 更新部门
+    def department_update(self, id, name, **kwargs):
+        base_url = "https://qyapi.weixin.qq.com/cgi-bin/department/update"
+        data = {"id": id, "name": name}
+        data.update(kwargs)
+        r = requests.post(base_url, params={"access_token": self.get_token(self.corpsecret)},
+                          json=data)
         return r.json()
 
+    # 删除部门
     def department_delete(self, id):
-        r = requests.get("https://qyapi.weixin.qq.com/cgi-bin/department/delete",
-                         params={"access_token": self.setup(), "id": id})
+        base_url = "https://qyapi.weixin.qq.com/cgi-bin/department/delete"
+        r = requests.get(base_url, params={"access_token": self.get_token(self.corpsecret), "id": id})
         return r.json()
 
-    def department_select(self):
-        r = requests.get("https://qyapi.weixin.qq.com/cgi-bin/department/list",
-                         params={"access_token": self.setup()})
+    # 查询部门
+    def department_select(self, id=None):
+        base_url = "https://qyapi.weixin.qq.com/cgi-bin/department/list"
+        r = requests.get(base_url, params={"access_token": self.get_token(self.corpsecret), "id": id})
         return r.json()
